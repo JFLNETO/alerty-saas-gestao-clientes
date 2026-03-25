@@ -176,10 +176,10 @@ O fluxo foi projetado com fallback de comunicação, garantindo robustez e conti
 ![Dashboard](./screens/dashboard.png)
 
 ### Cadastro de Cliente
-![Cadastro](./screens/cadastro.png)
+![Cadastro](./screens/cadastro-cliente.png)
 
 ### Confirmação de Pagamento
-![Pagamento](./screens/pagamento.png)
+![Pagamento](./screens/confirmacao-pagamento.png)
 
 ### Relatórios
 ![Relatórios](./screens/relatorio.png)
