@@ -1,0 +1,823 @@
+{
+  "name": "alert ct fuzille",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  *\nFROM\n  alerty.clientes\nWHERE\n  data_vencimento > '{{ $('Set2').item.json[\"de\"] }}'and\n data_vencimento < '{{ $('Set2').item.json[\"ate\"] }}' \nand ativo = true;",
+        "options": {}
+      },
+      "id": "da03f8e7-7696-4fb4-a9ef-93c5011d1abe",
+      "name": "Postgres",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -4992,
+        1808
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "WrtWROYVRhc8jjZY",
+          "name": "bcaju 2.0"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "var whatsapp = $input.item.json.whatsapp.replaceAll(/[^0-9]/g, '');\nvar ddd = whatsapp.slice(2,4);\nvar ddi = whatsapp.charAt(0);\nvar ddx = whatsapp.slice(0,2);\nvar length = whatsapp.length;\nif (length >= 12){\n  if (ddi == '+'){\n    ddi = whatsapp.slice(0,3);\n    whatsapp = parseInt(whatsapp.slice(3)).toString();\n  } else {\n    if (ddx == '55'){\n      whatsapp = parseInt(whatsapp.slice(2)).toString();\n      ddi = \"+55\";\n    } else {\n      whatsapp = parseInt(whatsapp).toString();\n      ddi = 'não informado';\n    }\n  }\n} else {\n  whatsapp = parseInt(whatsapp).toString();\n  ddi = 'não informado';\n}\n\nddd = whatsapp.slice(0,2);\nwhatsapp = whatsapp.slice(2);\nif (ddd > 28){\n  whatsapp = whatsapp.slice(-8);\n} else {\n  whatsapp = '9'+whatsapp.slice(-8);\n}\nvar whatsapp_formatado = '+55'+ddd+whatsapp;\n\nreturn {json: {\"whatsapp-formatado\": whatsapp_formatado,\n              \"ddd\": ddd,\n              \"ddi\": ddi}};"
+      },
+      "id": "6ddffd13-aff4-48b9-928e-53d6a1e0e993",
+      "name": "Validar Telefone (Code)",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -4992,
+        1584
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "whatsapp",
+              "value": "={{ $('Loop Over Items').item.json.telefone }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cfac0e11-b90c-4d34-86da-222077c744a5",
+      "name": "Set1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        1376
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "7b0c86b4-832d-4103-8444-0b9cdefd545b",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -5440,
+        1840
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "minutes"
+      },
+      "id": "956fe85a-9f50-48cf-91ae-d7707ddaeb34",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        688,
+        1376
+      ],
+      "webhookId": "ac05bf76-08f8-4df0-9b20-09e459e3a7c9"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 17
+            }
+          ]
+        }
+      },
+      "id": "e9a40127-43ac-4e6f-ac45-0bde21f3c719",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2528,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 60,
+        "unit": "seconds"
+      },
+      "id": "cd12b7ea-548c-4924-ad66-b0b9eb2c78af",
+      "name": "Wait1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        -4992,
+        688
+      ],
+      "webhookId": "0d31183a-3f7c-425e-a7bb-fee00645f5c0"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rota.bcaju.ai/v1/validar_teste",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "source",
+              "value": "automa"
+            },
+            {
+              "name": "session",
+              "value": "162"
+            },
+            {
+              "name": "passo",
+              "value": "1"
+            },
+            {
+              "name": "token",
+              "value": "={{ $('Select unidade').item.json.token }}"
+            },
+            {
+              "name": "id_contato",
+              "value": "={{ $('Validar Telefone (Code)').item.json[\"whatsapp-formatado\"].replace('+','') }}"
+            },
+            {
+              "name": "automacao",
+              "value": "91"
+            },
+            {
+              "name": "url_base",
+              "value": "={{ $('Select unidade').item.json.url_base }}"
+            },
+            {
+              "name": "timer",
+              "value": "1"
+            },
+            {
+              "name": "owner",
+              "value": "={{ $('Select unidade').item.json.id_logado }}"
+            },
+            {
+              "name": "campanha",
+              "value": "teste"
+            },
+            {
+              "name": "nome_cliente",
+              "value": "={{ $json.apelido }}"
+            },
+            {
+              "name": "id_empresa",
+              "value": "={{ $('Select unidade').item.json.empresa }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ba3100fa-c456-4cc9-ac7f-910d5692f639",
+      "name": "HTTP Request2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4992,
+        912
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rota.bcaju.ai/v1/validar_teste",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "source",
+              "value": "automa"
+            },
+            {
+              "name": "session",
+              "value": "162"
+            },
+            {
+              "name": "passo",
+              "value": "1"
+            },
+            {
+              "name": "token",
+              "value": "={{ $('Select unidade').item.json.token }}"
+            },
+            {
+              "name": "id_contato",
+              "value": "={{ $('Select unidade').item.json.id_logado }}"
+            },
+            {
+              "name": "automacao",
+              "value": "91"
+            },
+            {
+              "name": "url_base",
+              "value": "={{ $('Select unidade').item.json.url_base }}"
+            },
+            {
+              "name": "timer",
+              "value": "1"
+            },
+            {
+              "name": "owner",
+              "value": "={{ $('Select unidade').item.json.id_logado }}"
+            },
+            {
+              "name": "campanha",
+              "value": "teste"
+            },
+            {
+              "name": "nome_cliente",
+              "value": "={{ $json.apelido }}"
+            },
+            {
+              "name": "id_empresa",
+              "value": "={{ $('Select unidade').item.json.empresa }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "39a5851f-c972-457f-8f21-17d73096eb95",
+      "name": "HTTP Request3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4992,
+        1136
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "6LuTo4uehpMyuT10",
+          "mode": "list",
+          "cachedResultName": "A177 - A1 - API - enviar texto 1.1"
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        -208,
+        1296
+      ],
+      "id": "eb6d31ef-5444-414e-a747-9e2b50cf3c2f",
+      "name": "Execute Workflow2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "45719f7b-435f-4077-b4ba-b5e468d982b8",
+              "name": "dados",
+              "value": "={\n\"id_cliente\": \n\"13_{{ $('Validar whatsapp').item.json.whatsapp }}\",\n\"texto\": \n\"CT FUZILLE informa : A mensalidade vence amanhã! Por favor, certifique-se de realizar o pagamento a tempo. Obrigado!\",\n\"extra\":\"não salvar\",\n\"url_base\": \"{{ $('Select unidade').item.json[\"url_base\"] }}\",\n\"token\": \"{{ $('Select unidade').item.json[\"token\"] }}\",\n\"session\": {{ $('Select unidade').item.json[\"session\"] }}\n}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -432,
+        1296
+      ],
+      "id": "b2365519-e2e2-461e-af6b-867838bb99dc",
+      "name": "dados2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1632,
+        1360
+      ],
+      "id": "b430a7d3-bfba-48e6-9fff-5daba8860cc8",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        -1328,
+        1376
+      ],
+      "id": "9ab6019a-a514-450f-bc6b-a57781288808"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.bcaju.ai/v1/checar_wapp",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "empresa",
+              "value": "13"
+            },
+            {
+              "name": "telefone",
+              "value": "={{ $('Set1').item.json.telefone }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e12fef1f-2394-42d7-bd44-ae428320e299",
+      "name": "Validar whatsapp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -880,
+        1376
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0c989237-8b51-4814-9440-00addc013751",
+              "leftValue": "={{ $('Validar whatsapp').item.json.exists }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -656,
+        1376
+      ],
+      "id": "41632a18-b434-42a1-9b0a-c92140577de4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "6LuTo4uehpMyuT10",
+          "mode": "list",
+          "cachedResultName": "A177 - A1 - API - enviar texto 1.1"
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        464,
+        1376
+      ],
+      "id": "2c48f477-8d44-4adb-986c-ae035fcd31a7",
+      "name": "Execute Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "45719f7b-435f-4077-b4ba-b5e468d982b8",
+              "name": "dados",
+              "value": "={\n\"id_cliente\": \n\"13_{{ $('Select unidade').item.json.id_logado }}\",\n\"texto\": \n\"A mensalidade do aluno {{ $('Loop Over Items').item.json.nome }} ({{ $('Loop Over Items').item.json.apelido }}) vence amanhã\",\n\"extra\":\"não salvar\",\n\"url_base\": \"{{ $('Select unidade').item.json[\"url_base\"] }}\",\n\"token\": \"{{ $('Select unidade').item.json[\"token\"] }}\",\n\"session\": {{ $('Select unidade').item.json[\"session\"] }}\n}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        1376
+      ],
+      "id": "2ac4216b-9357-46f5-ab0a-cccb9e369508",
+      "name": "dados"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        16,
+        1296
+      ],
+      "id": "c1bfda07-6ae6-4f6b-a1ec-1020ea30b997",
+      "name": "Wait2",
+      "webhookId": "e5ef7021-cf69-40ed-aaad-f47e1a4208a9"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  *\nFROM\n  ct_fuzille\nWHERE\n  id_unico = 17;",
+        "options": {}
+      },
+      "id": "89b7ddad-4fea-48bd-9174-3956668870ae",
+      "name": "Postgres2",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -4992,
+        1360
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "jU1jTGcRXY5fPQhi",
+          "name": "n8napi"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Schedule todos os dias as 17hrs",
+        "height": 384,
+        "width": 288,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2672,
+        1184
+      ],
+      "typeVersion": 1,
+      "id": "b8b30c03-9d81-4ccd-8d1f-cab7f067253a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "unidade",
+          "mode": "list",
+          "cachedResultName": "unidade"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "session",
+              "value": "162"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d0c9b74c-2b64-474b-bffc-55e08300e591",
+      "name": "Select unidade",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -2256,
+        1360
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "WrtWROYVRhc8jjZY",
+          "name": "bcaju 2.0"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "alerty",
+          "mode": "list",
+          "cachedResultName": "alerty"
+        },
+        "table": {
+          "__rl": true,
+          "value": "clientes",
+          "mode": "list",
+          "cachedResultName": "clientes"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "id_empresa",
+              "value": "13"
+            },
+            {
+              "column": "ativo",
+              "value": "={{ true }}"
+            },
+            {
+              "column": "data_vencimento",
+              "value": "={{ $now.plus(1,'days').format('yyyy-MM-dd') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d2f3edb8-6318-4906-808b-26e0d61d9982",
+      "name": "select clientes",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -1904,
+        1360
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "WrtWROYVRhc8jjZY",
+          "name": "bcaju 2.0"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Envia msg whatsapp para cliente",
+        "height": 384,
+        "width": 432,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -496,
+        1024
+      ],
+      "typeVersion": 1,
+      "id": "5bd1e45c-8114-4539-8286-8f8d1b124a48",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Envia msg whatsapp para o dono",
+        "height": 384,
+        "width": 432,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        208,
+        1120
+      ],
+      "typeVersion": 1,
+      "id": "02ef6fe6-b599-49b2-99cf-a1bf33e1c89a",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# valida se o whatsapp do cliente existe",
+        "height": 384,
+        "width": 432,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -976,
+        1104
+      ],
+      "typeVersion": 1,
+      "id": "27cf615a-8726-4091-bd74-561a55e42684",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2025-09-18T17:00:20.005-03:00",
+          "Readable date": "September 18th 2025, 5:00:20 pm",
+          "Readable time": "5:00:20 pm",
+          "Day of week": "Thursday",
+          "Year": "2025",
+          "Month": "September",
+          "Day of month": "18",
+          "Hour": "17",
+          "Minute": "00",
+          "Second": "20",
+          "Timezone": "America/Recife (UTC-03:00)"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Postgres": {
+      "main": [
+        []
+      ]
+    },
+    "Set1": {
+      "main": [
+        [
+          {
+            "node": "Validar whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Select unidade",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow2": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dados2": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Set1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar whatsapp": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "dados2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dados": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        []
+      ]
+    },
+    "Select unidade": {
+      "main": [
+        [
+          {
+            "node": "select clientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select clientes": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dd572124-5c58-4ec9-8055-b5ec04f16ea0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "33738330930e3881dd5571eca013f36ddf8aab20e4ea5c1f2ebaf4a2b4668ac6"
+  },
+  "id": "hd5Tm1XHG368vbWG",
+  "tags": []
+}

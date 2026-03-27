@@ -1,0 +1,489 @@
+{
+  "name": "alerty.criar_editar_cliente",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alerty_criar_editar_cliente",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -224,
+        0
+      ],
+      "id": "832e830b-ffab-45d3-a792-a9824a1c3a49",
+      "name": "Webhook",
+      "webhookId": "bf5d73ac-965a-43b2-97ee-93e47ba40303"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"msg\": \"sucess\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        432,
+        0
+      ],
+      "id": "40b66e6a-a8d4-4f14-b3ae-343f8048c217",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "bdfeb98d-6a2e-49f6-8a31-fdee8be866cd",
+              "leftValue": "={{ $('Webhook').item.json.body.id_unico }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "3c1bb2c0-bf57-476f-b00c-7081030e3626",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "value": "alerty",
+          "mode": "list",
+          "cachedResultName": "alerty"
+        },
+        "table": {
+          "__rl": true,
+          "value": "clientes",
+          "mode": "list",
+          "cachedResultName": "clientes"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_unico": "={{ $('Webhook').item.json.body.id_unico }}",
+            "nome": "={{ $('Webhook').item.json.body.nome }}",
+            "id_cliente": "={{ $('Webhook').item.json.body.empresa }}_55{{ $('Webhook').item.json.body.telefone }}@s.whatsapp.net",
+            "data_vencimento": "={{ $('Webhook').item.json.body.data_vencimento }}",
+            "id_servicos": "=[{{ $('Webhook').item.json.body.modalidades }}]",
+            "telefone": "={{ $('Webhook').item.json.body.telefone }}",
+            "url_foto": "={{ $('Webhook').item.json.body.url_foto_cliente }}"
+          },
+          "matchingColumns": [
+            "id_unico"
+          ],
+          "schema": [
+            {
+              "id": "id_unico",
+              "displayName": "id_unico",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id_cliente",
+              "displayName": "id_cliente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ativo",
+              "displayName": "ativo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "data_vencimento",
+              "displayName": "data_vencimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "data_ultimo_pagamento",
+              "displayName": "data_ultimo_pagamento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_servicos",
+              "displayName": "id_servicos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "selos",
+              "displayName": "selos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_empresa",
+              "displayName": "id_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "url_foto",
+              "displayName": "url_foto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        112
+      ],
+      "id": "93cd347c-d20b-4d2c-b690-d835a7fb725d",
+      "name": "Update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "WrtWROYVRhc8jjZY",
+          "name": "bcaju 2.0"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "alerty",
+          "mode": "list",
+          "cachedResultName": "alerty"
+        },
+        "table": {
+          "__rl": true,
+          "value": "clientes",
+          "mode": "list",
+          "cachedResultName": "clientes"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_empresa": "={{ $('Webhook').item.json.body.empresa }}",
+            "ativo": "={{ true }}",
+            "nome": "={{ $('Webhook').item.json.body.nome }}",
+            "data_vencimento": "={{ $('Webhook').item.json.body.data_vencimento }}",
+            "id_servicos": "=[{{ $('Webhook').item.json.body.modalidades }}]",
+            "telefone": "={{ $('Webhook').item.json.body.telefone }}",
+            "url_foto": "={{ $('Webhook').item.json.body.url_foto_cliente }}",
+            "id_cliente": "={{ $('Webhook').item.json.body.empresa }}_{{ $('Webhook').item.json.body.telefone }}@s.whatsapp.net"
+          },
+          "matchingColumns": [
+            "id_unico"
+          ],
+          "schema": [
+            {
+              "id": "id_unico",
+              "displayName": "id_unico",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_cliente",
+              "displayName": "id_cliente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ativo",
+              "displayName": "ativo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "data_vencimento",
+              "displayName": "data_vencimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "data_ultimo_pagamento",
+              "displayName": "data_ultimo_pagamento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_servicos",
+              "displayName": "id_servicos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "selos",
+              "displayName": "selos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_empresa",
+              "displayName": "id_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "url_foto",
+              "displayName": "url_foto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        -96
+      ],
+      "id": "c1a5db17-2328-47b8-9b30-7fe7b6bb3d43",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "WrtWROYVRhc8jjZY",
+          "name": "bcaju 2.0"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "api.bcaju.ai",
+            "user-agent": "Bubble",
+            "content-length": "278",
+            "accept-encoding": "gzip, deflate",
+            "baggage": "bubblegroup.client.version=b765f02fc1b1e926a382824f10610fc1fcd28178,bubblegroup.client.commit_timestamp=1758232361000,bubblegroup.http.route=workflow%2Fstart,bubblegroup.http.host=bcaju.ai,bubblegroup.workflow.appname=bcaju,bubblegroup.workflow.app_version=test,bubblegroup.workflow.situation=page_wf,bubblegroup.workflow.id=cpxha,bubblegroup.workflow.event.type=ButtonClicked,bubblegroup.workflow.action.id=cqalU0,bubblegroup.workflow.action.type=apiconnector2-cpxig.cqaeq",
+            "content-type": "application/json",
+            "traceparent": "00-be927de0e765610941b51430c8df0adc-e4ac592c81650a0d-01",
+            "x-bubble-depth": "1",
+            "x-forwarded-for": "54.202.33.56",
+            "x-forwarded-host": "api.bcaju.ai",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "1e4e2a7d051f",
+            "x-real-ip": "54.202.33.56"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "id_unico": "262",
+            "nome": "teste",
+            "empresa": "13",
+            "modalidades": "2, 1",
+            "data_vencimento": "2025-09-18",
+            "url_foto_cliente": "//431940b155c11adb705fae52eefddb6e.cdn.bubble.io/f1758237463669x469994532736648600/WhatsApp%20Image%202025-09-15%20at%2019.07.05.jpeg",
+            "telefone": "557998876"
+          },
+          "webhookUrl": "https://api.bcaju.ai/v1/alerty_criar_editar_cliente",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "27d669ef-097c-44b2-956e-d71f8c4bb7e3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "33738330930e3881dd5571eca013f36ddf8aab20e4ea5c1f2ebaf4a2b4668ac6"
+  },
+  "id": "LR7sgfZwwLscyK8A",
+  "tags": []
+}
