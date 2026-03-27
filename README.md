@@ -118,7 +118,7 @@ e podem ser importados diretamente no n8n.
 
 | Arquivo | Responsabilidade |
 |---|---|
-| `alert_ct_fuzille.json` | Notificação diária de vencimentos via WhatsApp |
+| `alerty_notification.json` | Notificação diária de vencimentos via WhatsApp |
 | `confirmar_pagamento_alerty.json` | Confirmação de pagamento + registro no histórico |
 | `alerty_criar_editar_cliente.json` | Upsert de cliente (criação e edição) |
 | `ativar_inativar_cliente_alerty.json` | Toggle de status ativo/inativo |
