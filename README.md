@@ -111,6 +111,19 @@ O n8n é responsável pela execução das regras de negócio e automações do s
 - Orquestração de fluxos de dados
 
 ---
+## Workflows n8n
+
+Os fluxos abaixo estão disponíveis na pasta `/workflows` 
+e podem ser importados diretamente no n8n.
+
+| Arquivo | Responsabilidade |
+|---|---|
+| `alert_ct_fuzille.json` | Notificação diária de vencimentos via WhatsApp |
+| `confirmar_pagamento_alerty.json` | Confirmação de pagamento + registro no histórico |
+| `alerty_criar_editar_cliente.json` | Upsert de cliente (criação e edição) |
+| `ativar_inativar_cliente_alerty.json` | Toggle de status ativo/inativo |
+
+---
 
 ## Fluxo de Automação
 
